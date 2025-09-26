@@ -13,7 +13,7 @@ CUBE_SCORE = 350
 
 # Entity (player) settings
 ENTITY_RADIUS = 20
-ENTITY_ACCEL = 2
+ENTITY_ACCEL = 1.85
 
 # Database
 DB_FILE = Path("hscore.sql")

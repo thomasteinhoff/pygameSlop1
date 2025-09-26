@@ -6,6 +6,36 @@ from .ui import draw_text, draw_button
 from .highscores import HighscoreManager
 
 class Game:
+    def _draw_pointer(self, surface, direction, pos):
+        # direction: 'top', 'bottom', 'left', 'right'
+        # pos: (x, y) center of triangle base on border
+        size = 24
+        color = (255, 255, 0)
+        if direction == 'top':
+            points = [
+                (pos[0], 8),
+                (pos[0] - size//2, 8 + size),
+                (pos[0] + size//2, 8 + size)
+            ]
+        elif direction == 'bottom':
+            points = [
+                (pos[0], HEIGHT - 8),
+                (pos[0] - size//2, HEIGHT - 8 - size),
+                (pos[0] + size//2, HEIGHT - 8 - size)
+            ]
+        elif direction == 'left':
+            points = [
+                (8, pos[1]),
+                (8 + size, pos[1] - size//2),
+                (8 + size, pos[1] + size//2)
+            ]
+        elif direction == 'right':
+            points = [
+                (WIDTH - 8, pos[1]),
+                (WIDTH - 8 - size, pos[1] - size//2),
+                (WIDTH - 8 - size, pos[1] + size//2)
+            ]
+        pygame.draw.polygon(surface, color, points)
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -120,6 +150,25 @@ class Game:
         elif self.state == "playing":
             self.entity.draw(self.screen)
             self.cubes.draw(self.screen)
+
+            ex, ey = self.entity.pos.x, self.entity.pos.y
+            pointer_drawn = False
+            if ex < 0:
+                y = min(max(ey, 20), HEIGHT - 20)
+                self._draw_pointer(self.screen, 'left', (0, y))
+                pointer_drawn = True
+            if ex > WIDTH:
+                y = min(max(ey, 20), HEIGHT - 20)
+                self._draw_pointer(self.screen, 'right', (WIDTH, y))
+                pointer_drawn = True
+            if ey < 0:
+                x = min(max(ex, 20), WIDTH - 20)
+                self._draw_pointer(self.screen, 'top', (x, 0))
+                pointer_drawn = True
+            if ey > HEIGHT:
+                x = min(max(ex, 20), WIDTH - 20)
+                self._draw_pointer(self.screen, 'bottom', (x, HEIGHT))
+                pointer_drawn = True
 
             score_surf = self.font.render(str(self.score), True, (255, 255, 255))
             score_rect = score_surf.get_rect(topright=(WIDTH - 20, 20))

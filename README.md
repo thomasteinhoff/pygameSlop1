@@ -1,0 +1,1 @@
+avoid the ball n click the cubes for points
